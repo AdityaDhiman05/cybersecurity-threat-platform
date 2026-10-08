@@ -1,0 +1,1048 @@
+{
+    "evaluation_version": "T2",
+    "dataset": {
+        "training_path": "D:\\COLLEGE PROJECTS\\PROJECT - 2\\cybersecurity_threat_platform\\data\\raw\\UNSW_NB15_training-set.csv",
+        "testing_path": "D:\\COLLEGE PROJECTS\\PROJECT - 2\\cybersecurity_threat_platform\\data\\raw\\UNSW_NB15_testing-set.csv",
+        "training_rows": 175341,
+        "testing_rows": 82332,
+        "feature_count": 42,
+        "feature_columns": [
+            "dur",
+            "proto",
+            "service",
+            "state",
+            "spkts",
+            "dpkts",
+            "sbytes",
+            "dbytes",
+            "rate",
+            "sttl",
+            "dttl",
+            "sload",
+            "dload",
+            "sloss",
+            "dloss",
+            "sinpkt",
+            "dinpkt",
+            "sjit",
+            "djit",
+            "swin",
+            "stcpb",
+            "dtcpb",
+            "dwin",
+            "tcprtt",
+            "synack",
+            "ackdat",
+            "smean",
+            "dmean",
+            "trans_depth",
+            "response_body_len",
+            "ct_srv_src",
+            "ct_state_ttl",
+            "ct_dst_ltm",
+            "ct_src_dport_ltm",
+            "ct_dst_sport_ltm",
+            "ct_dst_src_ltm",
+            "is_ftp_login",
+            "ct_ftp_cmd",
+            "ct_flw_http_mthd",
+            "ct_src_ltm",
+            "ct_srv_dst",
+            "is_sm_ips_ports"
+        ]
+    },
+    "duplicate_and_overlap_audit": {
+        "feature_count": 42,
+        "feature_columns": [
+            "dur",
+            "proto",
+            "service",
+            "state",
+            "spkts",
+            "dpkts",
+            "sbytes",
+            "dbytes",
+            "rate",
+            "sttl",
+            "dttl",
+            "sload",
+            "dload",
+            "sloss",
+            "dloss",
+            "sinpkt",
+            "dinpkt",
+            "sjit",
+            "djit",
+            "swin",
+            "stcpb",
+            "dtcpb",
+            "dwin",
+            "tcprtt",
+            "synack",
+            "ackdat",
+            "smean",
+            "dmean",
+            "trans_depth",
+            "response_body_len",
+            "ct_srv_src",
+            "ct_state_ttl",
+            "ct_dst_ltm",
+            "ct_src_dport_ltm",
+            "ct_dst_sport_ltm",
+            "ct_dst_src_ltm",
+            "is_ftp_login",
+            "ct_ftp_cmd",
+            "ct_flw_http_mthd",
+            "ct_src_ltm",
+            "ct_srv_dst",
+            "is_sm_ips_ports"
+        ],
+        "training": {
+            "rows": 175341,
+            "unique_feature_rows": 101040,
+            "duplicate_rows_after_first": 74301,
+            "duplicate_groups": 9748,
+            "duplicate_rate": 0.4237514329221346
+        },
+        "testing": {
+            "rows": 82332,
+            "unique_feature_rows": 53946,
+            "duplicate_rows_after_first": 28386,
+            "duplicate_groups": 6318,
+            "duplicate_rate": 0.34477481416703104,
+            "class_duplicate_rates": {
+                "Analysis": {
+                    "rows": 677,
+                    "duplicate_rows": 365,
+                    "duplicate_rate": 0.5391432791728212
+                },
+                "Backdoor": {
+                    "rows": 583,
+                    "duplicate_rows": 513,
+                    "duplicate_rate": 0.8799313893653516
+                },
+                "DoS": {
+                    "rows": 4089,
+                    "duplicate_rows": 2774,
+                    "duplicate_rate": 0.6784054781120078
+                },
+                "Exploits": {
+                    "rows": 11132,
+                    "duplicate_rows": 4006,
+                    "duplicate_rate": 0.35986345670140135
+                },
+                "Fuzzers": {
+                    "rows": 6062,
+                    "duplicate_rows": 1668,
+                    "duplicate_rate": 0.27515671395579017
+                },
+                "Generic": {
+                    "rows": 18871,
+                    "duplicate_rows": 15231,
+                    "duplicate_rate": 0.8071114408351439
+                },
+                "Reconnaissance": {
+                    "rows": 3496,
+                    "duplicate_rows": 1027,
+                    "duplicate_rate": 0.29376430205949655
+                },
+                "Shellcode": {
+                    "rows": 378,
+                    "duplicate_rows": 1,
+                    "duplicate_rate": 0.0026455026455026454
+                },
+                "Worms": {
+                    "rows": 44,
+                    "duplicate_rows": 1,
+                    "duplicate_rate": 0.022727272727272728
+                },
+                "Normal": {
+                    "rows": 37000,
+                    "duplicate_rows": 2800,
+                    "duplicate_rate": 0.07567567567567568
+                }
+            }
+        },
+        "train_test_overlap": {
+            "test_rows_present_in_training": 8541,
+            "test_rows_not_present_in_training": 73791,
+            "overlap_rate": 0.10373852208132925,
+            "not_in_training_rate": 0.8962614779186707
+        }
+    },
+    "evaluation_views": {
+        "full_test": {
+            "rows": 82332
+        },
+        "deduplicated_test": {
+            "rows": 53946
+        },
+        "not_in_training": {
+            "rows": 73791
+        }
+    },
+    "metrics": {
+        "full_test": {
+            "row_count": 82332,
+            "binary": {
+                "accuracy": 0.8705970946897925,
+                "attack_precision": 0.8168213711445695,
+                "attack_recall": 0.9861245918997618,
+                "normal_recall": 0.7290540540540541,
+                "false_positive_rate": 0.27094594594594595,
+                "roc_auc": 0.9792245842087564,
+                "pr_auc": 0.9830757951232582,
+                "confusion_matrix": [
+                    [
+                        26975,
+                        10025
+                    ],
+                    [
+                        629,
+                        44703
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Normal",
+                    "Attack"
+                ],
+                "row_count": 82332
+            },
+            "multiclass": {
+                "row_count": 45332,
+                "accuracy": 0.7428527309626753,
+                "balanced_accuracy": 0.6251657435276122,
+                "macro_f1": 0.5200965023132083,
+                "top_2_accuracy": 0.8267669637342274,
+                "per_class": {
+                    "Analysis": {
+                        "precision": 0.023323615160349854,
+                        "recall": 0.011816838995568686,
+                        "f1": 0.01568627450980392,
+                        "support": 677
+                    },
+                    "Backdoor": {
+                        "precision": 0.0508574807806032,
+                        "recall": 0.5900514579759862,
+                        "f1": 0.0936436640805771,
+                        "support": 583
+                    },
+                    "DoS": {
+                        "precision": 0.4034383954154728,
+                        "recall": 0.17216923453167032,
+                        "f1": 0.24134384641755227,
+                        "support": 4089
+                    },
+                    "Exploits": {
+                        "precision": 0.8424521263367322,
+                        "recall": 0.6086058210564139,
+                        "f1": 0.7066861374778346,
+                        "support": 11132
+                    },
+                    "Fuzzers": {
+                        "precision": 0.807204180664427,
+                        "recall": 0.7134609039920818,
+                        "f1": 0.7574430823117339,
+                        "support": 6062
+                    },
+                    "Generic": {
+                        "precision": 0.9998349381017881,
+                        "recall": 0.9629590376768586,
+                        "f1": 0.9810505857582466,
+                        "support": 18871
+                    },
+                    "Reconnaissance": {
+                        "precision": 0.8587209302325581,
+                        "recall": 0.8449656750572082,
+                        "f1": 0.8517877739331027,
+                        "support": 3496
+                    },
+                    "Shellcode": {
+                        "precision": 0.25624553890078516,
+                        "recall": 0.9497354497354498,
+                        "f1": 0.4035975267003935,
+                        "support": 378
+                    },
+                    "Worms": {
+                        "precision": 0.53125,
+                        "recall": 0.7727272727272727,
+                        "f1": 0.6296296296296297,
+                        "support": 44
+                    }
+                },
+                "confusion_matrix": [
+                    [
+                        8,
+                        408,
+                        105,
+                        58,
+                        97,
+                        0,
+                        0,
+                        1,
+                        0
+                    ],
+                    [
+                        8,
+                        344,
+                        112,
+                        6,
+                        104,
+                        0,
+                        0,
+                        9,
+                        0
+                    ],
+                    [
+                        111,
+                        2400,
+                        704,
+                        541,
+                        212,
+                        0,
+                        32,
+                        87,
+                        2
+                    ],
+                    [
+                        174,
+                        2489,
+                        478,
+                        6775,
+                        459,
+                        1,
+                        431,
+                        306,
+                        19
+                    ],
+                    [
+                        20,
+                        817,
+                        217,
+                        171,
+                        4325,
+                        1,
+                        18,
+                        493,
+                        0
+                    ],
+                    [
+                        8,
+                        24,
+                        93,
+                        412,
+                        117,
+                        18172,
+                        4,
+                        33,
+                        8
+                    ],
+                    [
+                        14,
+                        281,
+                        36,
+                        72,
+                        27,
+                        0,
+                        2954,
+                        111,
+                        1
+                    ],
+                    [
+                        0,
+                        1,
+                        0,
+                        2,
+                        15,
+                        0,
+                        1,
+                        359,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        5,
+                        2,
+                        1,
+                        0,
+                        2,
+                        34
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Analysis",
+                    "Backdoor",
+                    "DoS",
+                    "Exploits",
+                    "Fuzzers",
+                    "Generic",
+                    "Reconnaissance",
+                    "Shellcode",
+                    "Worms"
+                ]
+            },
+            "anomaly": {
+                "row_count": 82332,
+                "auc": 0.7995285574774457,
+                "recall": 0.5684284831906821,
+                "false_positive_rate": 0.10583783783783783,
+                "confusion_matrix": [
+                    [
+                        33084,
+                        3916
+                    ],
+                    [
+                        19564,
+                        25768
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Normal",
+                    "Attack"
+                ],
+                "per_true_class_flag_rate": {
+                    "Analysis": {
+                        "rows": 677,
+                        "flagged": 419,
+                        "flag_rate": 0.6189069423929099
+                    },
+                    "Backdoor": {
+                        "rows": 583,
+                        "flagged": 407,
+                        "flag_rate": 0.6981132075471698
+                    },
+                    "DoS": {
+                        "rows": 4089,
+                        "flagged": 1715,
+                        "flag_rate": 0.4194179505991685
+                    },
+                    "Exploits": {
+                        "rows": 11132,
+                        "flagged": 2714,
+                        "flag_rate": 0.24380165289256198
+                    },
+                    "Fuzzers": {
+                        "rows": 6062,
+                        "flagged": 1855,
+                        "flag_rate": 0.30600461893764436
+                    },
+                    "Generic": {
+                        "rows": 18871,
+                        "flagged": 18341,
+                        "flag_rate": 0.9719145779237984
+                    },
+                    "Reconnaissance": {
+                        "rows": 3496,
+                        "flagged": 250,
+                        "flag_rate": 0.07151029748283753
+                    },
+                    "Shellcode": {
+                        "rows": 378,
+                        "flagged": 56,
+                        "flag_rate": 0.14814814814814814
+                    },
+                    "Worms": {
+                        "rows": 44,
+                        "flagged": 11,
+                        "flag_rate": 0.25
+                    },
+                    "Normal": {
+                        "rows": 37000,
+                        "flagged": 3916,
+                        "flag_rate": 0.10583783783783783
+                    }
+                }
+            },
+            "end_to_end": {
+                "row_count": 82332,
+                "normal_flows": 37000,
+                "attack_flows": 45332,
+                "normal_high_critical_count": 8948,
+                "normal_high_critical_rate": 0.24183783783783783,
+                "attack_high_critical_count": 43856,
+                "attack_high_critical_rate": 0.9674402188299656,
+                "category_accuracy_all_true_attacks": 0.7428527309626753,
+                "note": "Category accuracy is evaluated across all true attack records, including records that the binary classifier classified as Normal."
+            }
+        },
+        "deduplicated_test": {
+            "row_count": 53946,
+            "binary": {
+                "accuracy": 0.8221369517665814,
+                "attack_precision": 0.6794414000353545,
+                "attack_recall": 0.9732604071710727,
+                "normal_recall": 0.7348830409356725,
+                "false_positive_rate": 0.2651169590643275,
+                "roc_auc": 0.9619594226797286,
+                "pr_auc": 0.9397646773745834,
+                "confusion_matrix": [
+                    [
+                        25133,
+                        9067
+                    ],
+                    [
+                        528,
+                        19218
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Normal",
+                    "Attack"
+                ],
+                "row_count": 53946
+            },
+            "multiclass": {
+                "row_count": 19746,
+                "accuracy": 0.7927175124075763,
+                "balanced_accuracy": 0.6780608901316376,
+                "macro_f1": 0.565935967981359,
+                "top_2_accuracy": 0.9202876531955839,
+                "per_class": {
+                    "Analysis": {
+                        "precision": 0.0379746835443038,
+                        "recall": 0.009615384615384616,
+                        "f1": 0.015345268542199489,
+                        "support": 312
+                    },
+                    "Backdoor": {
+                        "precision": 0.09698275862068965,
+                        "recall": 0.6428571428571429,
+                        "f1": 0.16853932584269662,
+                        "support": 70
+                    },
+                    "DoS": {
+                        "precision": 0.5755305867665418,
+                        "recall": 0.3505703422053232,
+                        "f1": 0.43572778827977315,
+                        "support": 1315
+                    },
+                    "Exploits": {
+                        "precision": 0.827741753594587,
+                        "recall": 0.8240246982879595,
+                        "f1": 0.8258790436005626,
+                        "support": 7126
+                    },
+                    "Fuzzers": {
+                        "precision": 0.8807516261141893,
+                        "recall": 0.8320436959490214,
+                        "f1": 0.8557050906963136,
+                        "support": 4394
+                    },
+                    "Generic": {
+                        "precision": 0.9989983305509182,
+                        "recall": 0.8219780219780219,
+                        "f1": 0.9018839487565938,
+                        "support": 3640
+                    },
+                    "Reconnaissance": {
+                        "precision": 0.8242894056847545,
+                        "recall": 0.9044147428108545,
+                        "f1": 0.8624951718810352,
+                        "support": 2469
+                    },
+                    "Shellcode": {
+                        "precision": 0.25755395683453236,
+                        "recall": 0.9496021220159151,
+                        "f1": 0.4052065647990945,
+                        "support": 377
+                    },
+                    "Worms": {
+                        "precision": 0.5238095238095238,
+                        "recall": 0.7674418604651163,
+                        "f1": 0.6226415094339622,
+                        "support": 43
+                    }
+                },
+                "confusion_matrix": [
+                    [
+                        3,
+                        151,
+                        49,
+                        58,
+                        50,
+                        0,
+                        0,
+                        1,
+                        0
+                    ],
+                    [
+                        0,
+                        45,
+                        6,
+                        6,
+                        5,
+                        0,
+                        0,
+                        8,
+                        0
+                    ],
+                    [
+                        13,
+                        129,
+                        461,
+                        524,
+                        71,
+                        0,
+                        30,
+                        85,
+                        2
+                    ],
+                    [
+                        50,
+                        57,
+                        171,
+                        5872,
+                        229,
+                        1,
+                        423,
+                        304,
+                        19
+                    ],
+                    [
+                        4,
+                        40,
+                        16,
+                        171,
+                        3656,
+                        1,
+                        18,
+                        488,
+                        0
+                    ],
+                    [
+                        8,
+                        10,
+                        85,
+                        396,
+                        104,
+                        2992,
+                        4,
+                        33,
+                        8
+                    ],
+                    [
+                        1,
+                        31,
+                        13,
+                        60,
+                        19,
+                        0,
+                        2233,
+                        111,
+                        1
+                    ],
+                    [
+                        0,
+                        1,
+                        0,
+                        2,
+                        15,
+                        0,
+                        1,
+                        358,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        5,
+                        2,
+                        1,
+                        0,
+                        2,
+                        33
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Analysis",
+                    "Backdoor",
+                    "DoS",
+                    "Exploits",
+                    "Fuzzers",
+                    "Generic",
+                    "Reconnaissance",
+                    "Shellcode",
+                    "Worms"
+                ]
+            },
+            "anomaly": {
+                "row_count": 53946,
+                "auc": 0.6531339769458082,
+                "recall": 0.27468854451534486,
+                "false_positive_rate": 0.08485380116959064,
+                "confusion_matrix": [
+                    [
+                        31298,
+                        2902
+                    ],
+                    [
+                        14322,
+                        5424
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Normal",
+                    "Attack"
+                ],
+                "per_true_class_flag_rate": {
+                    "Analysis": {
+                        "rows": 312,
+                        "flagged": 190,
+                        "flag_rate": 0.6089743589743589
+                    },
+                    "Backdoor": {
+                        "rows": 70,
+                        "flagged": 10,
+                        "flag_rate": 0.14285714285714285
+                    },
+                    "DoS": {
+                        "rows": 1315,
+                        "flagged": 253,
+                        "flag_rate": 0.19239543726235742
+                    },
+                    "Exploits": {
+                        "rows": 7126,
+                        "flagged": 842,
+                        "flag_rate": 0.11815885489755824
+                    },
+                    "Fuzzers": {
+                        "rows": 4394,
+                        "flagged": 856,
+                        "flag_rate": 0.1948111060537096
+                    },
+                    "Generic": {
+                        "rows": 3640,
+                        "flagged": 3129,
+                        "flag_rate": 0.8596153846153847
+                    },
+                    "Reconnaissance": {
+                        "rows": 2469,
+                        "flagged": 77,
+                        "flag_rate": 0.031186715269339815
+                    },
+                    "Shellcode": {
+                        "rows": 377,
+                        "flagged": 56,
+                        "flag_rate": 0.14854111405835543
+                    },
+                    "Worms": {
+                        "rows": 43,
+                        "flagged": 11,
+                        "flag_rate": 0.2558139534883721
+                    },
+                    "Normal": {
+                        "rows": 34200,
+                        "flagged": 2902,
+                        "flag_rate": 0.08485380116959064
+                    }
+                }
+            },
+            "end_to_end": {
+                "row_count": 53946,
+                "normal_flows": 34200,
+                "attack_flows": 19746,
+                "normal_high_critical_count": 8035,
+                "normal_high_critical_rate": 0.23494152046783626,
+                "attack_high_critical_count": 18478,
+                "attack_high_critical_rate": 0.935784462675985,
+                "category_accuracy_all_true_attacks": 0.7927175124075763,
+                "note": "Category accuracy is evaluated across all true attack records, including records that the binary classifier classified as Normal."
+            }
+        },
+        "not_in_training": {
+            "row_count": 73791,
+            "binary": {
+                "accuracy": 0.8620292447588459,
+                "attack_precision": 0.7973402227775189,
+                "attack_recall": 0.9840315709693438,
+                "normal_recall": 0.7306349921188922,
+                "false_positive_rate": 0.26936500788110784,
+                "roc_auc": 0.9771834691254957,
+                "pr_auc": 0.979418204477831,
+                "confusion_matrix": [
+                    [
+                        25958,
+                        9570
+                    ],
+                    [
+                        611,
+                        37652
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Normal",
+                    "Attack"
+                ],
+                "row_count": 73791
+            },
+            "multiclass": {
+                "row_count": 38263,
+                "accuracy": 0.8112536915558111,
+                "balanced_accuracy": 0.6628759177613968,
+                "macro_f1": 0.5570356641514758,
+                "top_2_accuracy": 0.8932388991976583,
+                "per_class": {
+                    "Analysis": {
+                        "precision": 0.049689440993788817,
+                        "recall": 0.014492753623188406,
+                        "f1": 0.02244039270687237,
+                        "support": 552
+                    },
+                    "Backdoor": {
+                        "precision": 0.1332300542215337,
+                        "recall": 0.5941278065630398,
+                        "f1": 0.2176526415691237,
+                        "support": 579
+                    },
+                    "DoS": {
+                        "precision": 0.4095238095238095,
+                        "recall": 0.3299760191846523,
+                        "f1": 0.3654714475431607,
+                        "support": 2085
+                    },
+                    "Exploits": {
+                        "precision": 0.8430616054760424,
+                        "recall": 0.7260450160771704,
+                        "f1": 0.7801900374316153,
+                        "support": 9330
+                    },
+                    "Fuzzers": {
+                        "precision": 0.8070636858914146,
+                        "recall": 0.7405619720737804,
+                        "f1": 0.7723840345199569,
+                        "support": 5801
+                    },
+                    "Generic": {
+                        "precision": 0.9998179722104241,
+                        "recall": 0.9608723540731238,
+                        "f1": 0.9799583705025275,
+                        "support": 17149
+                    },
+                    "Reconnaissance": {
+                        "precision": 0.8116679718089271,
+                        "recall": 0.8791348600508906,
+                        "f1": 0.8440553745928339,
+                        "support": 2358
+                    },
+                    "Shellcode": {
+                        "precision": 0.25,
+                        "recall": 0.947945205479452,
+                        "f1": 0.3956546598056032,
+                        "support": 365
+                    },
+                    "Worms": {
+                        "precision": 0.5396825396825397,
+                        "recall": 0.7727272727272727,
+                        "f1": 0.6355140186915887,
+                        "support": 44
+                    }
+                },
+                "confusion_matrix": [
+                    [
+                        8,
+                        288,
+                        100,
+                        58,
+                        97,
+                        0,
+                        0,
+                        1,
+                        0
+                    ],
+                    [
+                        8,
+                        344,
+                        108,
+                        6,
+                        104,
+                        0,
+                        0,
+                        9,
+                        0
+                    ],
+                    [
+                        37,
+                        496,
+                        688,
+                        538,
+                        211,
+                        0,
+                        28,
+                        85,
+                        2
+                    ],
+                    [
+                        92,
+                        795,
+                        462,
+                        6774,
+                        454,
+                        1,
+                        430,
+                        304,
+                        18
+                    ],
+                    [
+                        13,
+                        602,
+                        208,
+                        170,
+                        4296,
+                        1,
+                        18,
+                        493,
+                        0
+                    ],
+                    [
+                        0,
+                        19,
+                        80,
+                        410,
+                        117,
+                        16478,
+                        4,
+                        33,
+                        8
+                    ],
+                    [
+                        3,
+                        37,
+                        34,
+                        72,
+                        27,
+                        0,
+                        2073,
+                        111,
+                        1
+                    ],
+                    [
+                        0,
+                        1,
+                        0,
+                        2,
+                        15,
+                        0,
+                        1,
+                        346,
+                        0
+                    ],
+                    [
+                        0,
+                        0,
+                        0,
+                        5,
+                        2,
+                        1,
+                        0,
+                        2,
+                        34
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Analysis",
+                    "Backdoor",
+                    "DoS",
+                    "Exploits",
+                    "Fuzzers",
+                    "Generic",
+                    "Reconnaissance",
+                    "Shellcode",
+                    "Worms"
+                ]
+            },
+            "anomaly": {
+                "row_count": 73791,
+                "auc": 0.7886447764436355,
+                "recall": 0.5745759611112563,
+                "false_positive_rate": 0.10434023868498087,
+                "confusion_matrix": [
+                    [
+                        31821,
+                        3707
+                    ],
+                    [
+                        16278,
+                        21985
+                    ]
+                ],
+                "confusion_matrix_labels": [
+                    "Normal",
+                    "Attack"
+                ],
+                "per_true_class_flag_rate": {
+                    "Analysis": {
+                        "rows": 552,
+                        "flagged": 389,
+                        "flag_rate": 0.7047101449275363
+                    },
+                    "Backdoor": {
+                        "rows": 579,
+                        "flagged": 407,
+                        "flag_rate": 0.7029360967184801
+                    },
+                    "DoS": {
+                        "rows": 2085,
+                        "flagged": 797,
+                        "flag_rate": 0.38225419664268584
+                    },
+                    "Exploits": {
+                        "rows": 9330,
+                        "flagged": 1861,
+                        "flag_rate": 0.1994640943193998
+                    },
+                    "Fuzzers": {
+                        "rows": 5801,
+                        "flagged": 1735,
+                        "flag_rate": 0.2990863644199276
+                    },
+                    "Generic": {
+                        "rows": 17149,
+                        "flagged": 16636,
+                        "flag_rate": 0.9700857192839233
+                    },
+                    "Reconnaissance": {
+                        "rows": 2358,
+                        "flagged": 98,
+                        "flag_rate": 0.041560644614079725
+                    },
+                    "Shellcode": {
+                        "rows": 365,
+                        "flagged": 51,
+                        "flag_rate": 0.13972602739726028
+                    },
+                    "Worms": {
+                        "rows": 44,
+                        "flagged": 11,
+                        "flag_rate": 0.25
+                    },
+                    "Normal": {
+                        "rows": 35528,
+                        "flagged": 3707,
+                        "flag_rate": 0.10434023868498087
+                    }
+                }
+            },
+            "end_to_end": {
+                "row_count": 73791,
+                "normal_flows": 35528,
+                "attack_flows": 38263,
+                "normal_high_critical_count": 8509,
+                "normal_high_critical_rate": 0.23950123845980634,
+                "attack_high_critical_count": 36805,
+                "attack_high_critical_rate": 0.9618953035569611,
+                "category_accuracy_all_true_attacks": 0.8112536915558111,
+                "note": "Category accuracy is evaluated across all true attack records, including records that the binary classifier classified as Normal."
+            }
+        }
+    },
+    "limitations": [
+        "The UNSW-NB15 test set contains a substantial attack prevalence compared with real operational networks.",
+        "Exact duplicate records are present in the testing dataset.",
+        "Train/test feature overlap is reported explicitly rather than ignored.",
+        "Anomaly detection identifies behavior that does not conform to the learned normal profile and may require investigation; it is not claimed to be a zero-day detector.",
+        "The reported precision values are dependent on the class prevalence of the evaluation dataset."
+    ]
+}
