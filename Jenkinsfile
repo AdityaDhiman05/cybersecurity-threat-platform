@@ -3,7 +3,8 @@ pipeline {
 
     options {
         timestamps()
-        disableConcurrentBuilds()
+        disableConcurrentBuilds(abortPrevious: true)
+        timeout(time: 45, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
@@ -16,12 +17,10 @@ pipeline {
         // ---- CHANGE THESE ----
         AWS_REGION     = 'ap-south-1'
         AWS_ACCOUNT_ID = '279391565053'
-        S3_BUCKET      = 'threat-platform-artifacts-279391565053'   // holds models/ and data/
+        S3_BUCKET      = 'threat-platform-artifacts-279391565053'
         ECS_CLUSTER    = 'threat-platform-cluster'
         ECS_SERVICE    = 'threat-platform'
-        // Apple Silicon Mac builds arm64 natively. taskdef.json must say
-        // "cpuArchitecture": "ARM64". If you prefer x86, use linux/amd64 + X86_64
-        // (slower: Docker emulates amd64 on an M-series Mac).
+        // Apple Silicon builds arm64 natively; taskdef.json must say "ARM64".
         PLATFORM       = 'linux/arm64'
         // -----------------------
 
@@ -29,16 +28,18 @@ pipeline {
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         IMAGE_URI    = "${ECR_REGISTRY}/${ECR_REPO}"
 
-        // --- macOS specifics ---
-        // Jenkins started as a service has a minimal PATH; add Homebrew and Docker Desktop locations.
-        PATH          = "/opt/homebrew/bin:/usr/local/bin:/Applications/Docker.app/Contents/Resources/bin:${env.PATH}"
-        // Talk to Docker Desktop directly.
-        DOCKER_HOST   = "unix://${env.HOME}/.docker/run/docker.sock"
-        // Private Docker config inside the workspace so the macOS keychain
-        // credential helper is not involved (it breaks `docker login` under Jenkins).
-        DOCKER_CONFIG = "${env.WORKSPACE}/.docker"
+        // Jenkins credential (kind: Username with password)
+        //   username = AWS access key ID, password = AWS secret access key
+        AWS_CREDS             = credentials('aws-ecr-creds')
+        AWS_ACCESS_KEY_ID     = "${AWS_CREDS_USR}"
+        AWS_SECRET_ACCESS_KEY = "${AWS_CREDS_PSW}"
+        AWS_DEFAULT_REGION    = "${AWS_REGION}"
+
+        // macOS specifics
+        PATH            = "/opt/homebrew/bin:/usr/local/bin:/Applications/Docker.app/Contents/Resources/bin:${env.PATH}"
+        DOCKER_HOST     = "unix://${env.HOME}/.docker/run/docker.sock"
+        DOCKER_CONFIG   = "${env.WORKSPACE}/.docker"
         DOCKER_BUILDKIT = '1'
-        // AWS credentials come from ~/.aws of the user running Jenkins.
     }
 
     stages {
@@ -53,9 +54,8 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
+        stage('Prepare') {
             steps {
-                checkout scm
                 script {
                     env.GIT_SHA   = sh(returnStdout: true, script: 'git rev-parse --short=8 HEAD').trim()
                     env.IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_SHA}"
@@ -69,15 +69,14 @@ pipeline {
                 sh '''
                     set -e
                     mkdir -p models data/raw
-                    aws s3 sync s3://${S3_BUCKET}/models ./models --region ${AWS_REGION}
-                    aws s3 cp   s3://${S3_BUCKET}/data/UNSW_NB15_testing-set.csv ./data/raw/UNSW_NB15_testing-set.csv --region ${AWS_REGION}
+                    aws s3 sync s3://${S3_BUCKET}/models ./models
+                    aws s3 cp   s3://${S3_BUCKET}/data/UNSW_NB15_testing-set.csv ./data/raw/UNSW_NB15_testing-set.csv
                 '''
             }
         }
 
         stage('Verify models') {
             steps {
-                // wc -c works on both macOS and Linux (stat flags differ)
                 sh '''
                     set -e
                     count=0
@@ -122,15 +121,16 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                    aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} \
-                      --force-new-deployment --region ${AWS_REGION}
-                    aws ecs wait services-stable --cluster ${ECS_CLUSTER} --services ${ECS_SERVICE} --region ${AWS_REGION}
+                    aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment
+                    aws ecs wait services-stable --cluster ${ECS_CLUSTER} --services ${ECS_SERVICE}
                 '''
             }
         }
     }
 
     post {
+        success { echo "Pushed ${env.IMAGE_URI}:${env.IMAGE_TAG}" }
+        failure { echo 'Pipeline failed, check the stage logs above.' }
         always {
             sh '''
                 docker rmi ${IMAGE_URI}:${IMAGE_TAG} ${IMAGE_URI}:latest || true
@@ -138,7 +138,5 @@ pipeline {
                 rm -rf "$DOCKER_CONFIG" || true
             '''
         }
-        success { echo "Pushed ${IMAGE_URI}:${IMAGE_TAG}" }
-        failure { echo 'Pipeline failed, check the stage logs above.' }
     }
 }
