@@ -136,3 +136,4 @@ data/raw/*.csv
 *.pem
 trust-*.json
 jenkins-ec2-policy.json
+taskdef.rendered.json
