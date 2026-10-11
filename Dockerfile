@@ -21,5 +21,5 @@ USER appuser
 EXPOSE 5000 8501
 
 ENV API_BASE_URL=http://127.0.0.1:5000
-k
+
 CMD ["sh", "-c", "python scripts/seed_demo.py & exec python api/server.py"]
