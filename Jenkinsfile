@@ -39,7 +39,6 @@ pipeline {
         PATH            = "/opt/homebrew/bin:/usr/local/bin:/Applications/Docker.app/Contents/Resources/bin:${env.PATH}"
         DOCKER_HOST     = "unix://${env.HOME}/.docker/run/docker.sock"
         DOCKER_CONFIG   = "${env.WORKSPACE}/.docker"
-        DOCKER_BUILDKIT = '1'
     }
 
     stages {
@@ -48,7 +47,11 @@ pipeline {
                 sh '''
                     set -e
                     mkdir -p "$DOCKER_CONFIG"
+                    if [ -d "$HOME/.docker/cli-plugins" ]; then
+                        ln -sfn "$HOME/.docker/cli-plugins" "$DOCKER_CONFIG/cli-plugins"
+                    fi
                     docker version --format 'docker server {{.Server.Version}}'
+                    docker buildx version || echo "buildx not available, build will use the classic builder"
                     aws sts get-caller-identity --query Arn --output text
                 '''
             }
@@ -130,6 +133,12 @@ pipeline {
         stage('Build image') {
             steps {
                 sh '''
+                    if docker buildx version > /dev/null 2>&1; then
+                        export DOCKER_BUILDKIT=1
+                    else
+                        export DOCKER_BUILDKIT=0
+                        echo "buildx not available, using the classic builder"
+                    fi
                     docker build --pull --platform ${PLATFORM} \
                       -t ${IMAGE_URI}:${IMAGE_TAG} \
                       -t ${IMAGE_URI}:latest .
