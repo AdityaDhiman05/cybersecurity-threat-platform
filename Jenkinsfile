@@ -66,11 +66,44 @@ pipeline {
 
         stage('Fetch models + dataset from S3') {
             steps {
+                // The repo tracks models/*.pkl as pointer files, so every checkout resets them.
+                // Keep the real files in a cache OUTSIDE the workspace, refresh it from S3
+                // (only missing or changed files download), then copy them into the workspace.
                 sh '''
                     set -e
-                    mkdir -p models data/raw
-                    aws s3 sync s3://${S3_BUCKET}/models ./models
-                    aws s3 cp   s3://${S3_BUCKET}/data/UNSW_NB15_testing-set.csv ./data/raw/UNSW_NB15_testing-set.csv
+                    CACHE="$HOME/.tp-artifact-cache"
+                    mkdir -p "$CACHE/models" "$CACHE/data" models data/raw
+                    export AWS_MAX_ATTEMPTS=10 AWS_RETRY_MODE=standard
+
+                    retry() {
+                        try=1
+                        until "$@"; do
+                            if [ "$try" -ge 4 ]; then
+                                echo "ERROR: S3 download failed after $try attempts"
+                                exit 1
+                            fi
+                            echo "S3 sync failed (attempt $try), retrying in 10s..."
+                            try=$((try+1))
+                            sleep 10
+                        done
+                    }
+
+                    retry aws s3 sync "s3://${S3_BUCKET}/models" "$CACHE/models" --only-show-errors
+                    retry aws s3 sync "s3://${S3_BUCKET}/data" "$CACHE/data" --exclude "*" --include "UNSW_NB15_testing-set.csv" --only-show-errors
+
+                    if [ ! -s "$CACHE/data/UNSW_NB15_testing-set.csv" ]; then
+                        echo "ERROR: dataset missing in S3. Upload it with:"
+                        echo "  aws s3 cp UNSW_NB15_testing-set.csv s3://${S3_BUCKET}/data/UNSW_NB15_testing-set.csv"
+                        exit 1
+                    fi
+
+                    for f in "$CACHE"/models/*.pkl; do
+                        rm -f "models/$(basename "$f")"
+                        cp -c "$f" models/ 2>/dev/null || cp "$f" models/
+                    done
+                    rm -f data/raw/UNSW_NB15_testing-set.csv
+                    cp -c "$CACHE/data/UNSW_NB15_testing-set.csv" data/raw/ 2>/dev/null || cp "$CACHE/data/UNSW_NB15_testing-set.csv" data/raw/
+                    ls -lh models/ data/raw/
                 '''
             }
         }
