@@ -14,4 +14,4 @@ Dockerfile
 
 # Local runtime artefacts (models/ is intentionally INCLUDED)
 database/*.db
-database/*.db-*
+database/*.db-*UNSW_NB15_testing-set.csv

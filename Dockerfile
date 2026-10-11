@@ -41,4 +41,4 @@ ENV API_BASE_URL=http://127.0.0.1:5000
 
 # ECS ignores Dockerfile HEALTHCHECK; define health checks in the task
 # definition / target group (API: GET /api/v1/health on port 5000).
-CMD ["python", "api/server.py"]
+CMD ["sh", "-c", "python scripts/seed_demo.py & exec python api/server.py"]
