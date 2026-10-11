@@ -4,7 +4,7 @@ pipeline {
     options {
         timestamps()
         disableConcurrentBuilds()
-        buildDiscarder(logRotator(numToKeepStr: '20'))
+        buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
     parameters {
@@ -19,18 +19,40 @@ pipeline {
         S3_BUCKET      = 'threat-platform-artifacts-279391565053'   // holds models/ and data/
         ECS_CLUSTER    = 'threat-platform-cluster'
         ECS_SERVICE    = 'threat-platform'
-        // Must match runtimePlatform.cpuArchitecture in taskdef.json
-        // (Jenkins EC2 = x86_64 -> linux/amd64)
-        PLATFORM       = 'linux/amd64'
+        // Apple Silicon Mac builds arm64 natively. taskdef.json must say
+        // "cpuArchitecture": "ARM64". If you prefer x86, use linux/amd64 + X86_64
+        // (slower: Docker emulates amd64 on an M-series Mac).
+        PLATFORM       = 'linux/arm64'
         // -----------------------
 
         ECR_REPO     = 'cybersecurity-threat-platform'
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         IMAGE_URI    = "${ECR_REGISTRY}/${ECR_REPO}"
-        // AWS access comes from the Jenkins EC2 instance role (no keys stored in Jenkins)
+
+        // --- macOS specifics ---
+        // Jenkins started as a service has a minimal PATH; add Homebrew and Docker Desktop locations.
+        PATH          = "/opt/homebrew/bin:/usr/local/bin:/Applications/Docker.app/Contents/Resources/bin:${env.PATH}"
+        // Talk to Docker Desktop directly.
+        DOCKER_HOST   = "unix://${env.HOME}/.docker/run/docker.sock"
+        // Private Docker config inside the workspace so the macOS keychain
+        // credential helper is not involved (it breaks `docker login` under Jenkins).
+        DOCKER_CONFIG = "${env.WORKSPACE}/.docker"
+        DOCKER_BUILDKIT = '1'
+        // AWS credentials come from ~/.aws of the user running Jenkins.
     }
 
     stages {
+        stage('Preflight') {
+            steps {
+                sh '''
+                    set -e
+                    mkdir -p "$DOCKER_CONFIG"
+                    docker version --format 'docker server {{.Server.Version}}'
+                    aws sts get-caller-identity --query Arn --output text
+                '''
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -55,11 +77,12 @@ pipeline {
 
         stage('Verify models') {
             steps {
+                // wc -c works on both macOS and Linux (stat flags differ)
                 sh '''
                     set -e
                     count=0
                     for f in models/*.pkl; do
-                        size=$(stat -c%s "$f")
+                        size=$(wc -c < "$f" | tr -d ' ')
                         if [ "$size" -lt 1024 ]; then
                             echo "ERROR: $f is only $size bytes (pointer file, not the real model)"
                             exit 1
@@ -97,7 +120,6 @@ pipeline {
         stage('Deploy to ECS Fargate') {
             when { expression { return params.DEPLOY_TO_ECS } }
             steps {
-                // Task definition points at :latest, so a forced deployment pulls the new image.
                 sh '''
                     set -e
                     aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} \
@@ -113,7 +135,7 @@ pipeline {
             sh '''
                 docker rmi ${IMAGE_URI}:${IMAGE_TAG} ${IMAGE_URI}:latest || true
                 docker logout ${ECR_REGISTRY} || true
-                docker image prune -f || true
+                rm -rf "$DOCKER_CONFIG" || true
             '''
         }
         success { echo "Pushed ${IMAGE_URI}:${IMAGE_TAG}" }
