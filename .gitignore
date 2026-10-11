@@ -126,4 +126,13 @@ outputs/*.jpeg
 # PROJECT BACKUP FILES
 # ============================================================
 
-*.T1-backup
+*.T1-backupmodels/*.pkl
+data/raw/*.csv
+*.pem
+trust-*.json
+jenkins-ec2-policy.json
+models/*.pkl
+data/raw/*.csv
+*.pem
+trust-*.json
+jenkins-ec2-policy.json
