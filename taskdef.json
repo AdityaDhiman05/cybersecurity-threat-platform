@@ -11,14 +11,45 @@
   },
   "containerDefinitions": [
     {
-      "name": "dashboard",
+      "name": "api",
       "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/threat-platform:latest",
       "essential": true,
       "portMappings": [
-        { "containerPort": 8501, "protocol": "tcp" }
+        { "containerPort": 5000, "protocol": "tcp" }
       ],
       "secrets": [
-        { "name": "API_KEY", "valueFrom": "SECRET_ARN" }
+        { "name": "THREAT_PLATFORM_API_KEY", "valueFrom": "SECRET_ARN" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/threat-platform",
+          "awslogs-region": "REGION",
+          "awslogs-stream-prefix": "api"
+        }
+      }
+    },
+    {
+      "name": "dashboard",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/threat-platform:latest",
+      "essential": true,
+      "command": [
+        "streamlit", "run", "dashboard/app.py",
+        "--server.port=8501",
+        "--server.address=0.0.0.0",
+        "--server.headless=true"
+      ],
+      "portMappings": [
+        { "containerPort": 8501, "protocol": "tcp" }
+      ],
+      "environment": [
+        { "name": "API_BASE_URL", "value": "http://127.0.0.1:5000" }
+      ],
+      "secrets": [
+        { "name": "THREAT_PLATFORM_API_KEY", "valueFrom": "SECRET_ARN" }
+      ],
+      "dependsOn": [
+        { "containerName": "api", "condition": "START" }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
