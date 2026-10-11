@@ -14,28 +14,22 @@ pipeline {
     }
 
     environment {
-        // ---- CHANGE THESE ----
         AWS_REGION     = 'ap-south-1'
         AWS_ACCOUNT_ID = '279391565053'
         S3_BUCKET      = 'threat-platform-artifacts-279391565053'
         ECS_CLUSTER    = 'threat-platform-cluster'
         ECS_SERVICE    = 'threat-platform'
-        // Apple Silicon builds arm64 natively; taskdef.json must say "ARM64".
         PLATFORM       = 'linux/arm64'
-        // -----------------------
 
         ECR_REPO     = 'cybersecurity-threat-platform'
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         IMAGE_URI    = "${ECR_REGISTRY}/${ECR_REPO}"
 
-        // Jenkins credential (kind: Username with password)
-        //   username = AWS access key ID, password = AWS secret access key
         AWS_CREDS             = credentials('aws-ecr-creds')
         AWS_ACCESS_KEY_ID     = "${AWS_CREDS_USR}"
         AWS_SECRET_ACCESS_KEY = "${AWS_CREDS_PSW}"
         AWS_DEFAULT_REGION    = "${AWS_REGION}"
 
-        // macOS specifics
         PATH            = "/opt/homebrew/bin:/usr/local/bin:/Applications/Docker.app/Contents/Resources/bin:${env.PATH}"
         DOCKER_HOST     = "unix://${env.HOME}/.docker/run/docker.sock"
         DOCKER_CONFIG   = "${env.WORKSPACE}/.docker"
@@ -69,9 +63,6 @@ pipeline {
 
         stage('Fetch models + dataset from S3') {
             steps {
-                // The repo tracks models/*.pkl as pointer files, so every checkout resets them.
-                // Keep the real files in a cache OUTSIDE the workspace, refresh it from S3
-                // (only missing or changed files download), then copy them into the workspace.
                 sh '''
                     set -e
                     CACHE="$HOME/.tp-artifact-cache"
